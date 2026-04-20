@@ -41,7 +41,7 @@ jobs:
         run: |
           docker build ./frontend \
             --file ./frontend/Dockerfile \
-            --build-arg VITE_API_URL=https://worldcup.szdomonkos01.jcloud.jedlik.cloud \
+            --build-arg VITE_API_URL=https://worldcup.szdomonkos.jcloud.jedlik.cloud \
             --tag ghcr.io/szdomonkos01/worldcup-frontend:$IMAGE_TAG \
             --tag ghcr.io/szdomonkos01/worldcup-frontend:latest
           docker push ghcr.io/szdomonkos01/worldcup-frontend:$IMAGE_TAG
