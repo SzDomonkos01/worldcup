@@ -1,0 +1,44 @@
+# kubectl create secret docker-registry ghcr-auth-token \
+#   --docker-server=ghcr.io \
+#   --docker-username=<GITHUB_USERNAME> \
+#   --docker-password=<GHCR_TOKEN>
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worldcup-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worldcup-backend
+  template:
+    metadata:
+      labels:
+        app: worldcup-backend
+    spec:
+      containers:
+        - name: worldcup-backend-container
+          image: ghcr.io/<szdomonkos01>/worldcup-backend:latest
+          ports:
+            - containerPort: 3001
+          env:
+            - name: PORT
+              value: "3001"
+      imagePullSecrets:
+        - name: ghcr-auth-token
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: worldcup-backend-service
+spec:
+  selector:
+    app: worldcup-backend
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001

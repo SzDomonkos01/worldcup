@@ -1,0 +1,70 @@
+name: Build & Deploy World Cup App to K8S
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  GITHUB_USERNAME: ${{ github.repository_owner }}
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate image tag
+        run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        run: docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build & push backend
+        run: |
+          docker build ./backend \
+            --file ./backend/Dockerfile \
+            --tag ghcr.io/${{ github.repository_owner }}/worldcup-backend:$IMAGE_TAG \
+            --tag ghcr.io/${{ github.repository_owner }}/worldcup-backend:latest
+          docker push ghcr.io/${{ github.repository_owner }}/worldcup-backend:$IMAGE_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/worldcup-backend:latest
+
+      - name: Build & push frontend
+        run: |
+          docker build ./frontend \
+            --file ./frontend/Dockerfile \
+            --build-arg VITE_API_URL=https://worldcup.${{ github.repository_owner }}.jcloud.jedlik.cloud \
+            --tag ghcr.io/${{ github.repository_owner }}/worldcup-frontend:$IMAGE_TAG \
+            --tag ghcr.io/${{ github.repository_owner }}/worldcup-frontend:latest
+          docker push ghcr.io/${{ github.repository_owner }}/worldcup-frontend:$IMAGE_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/worldcup-frontend:latest
+
+      - name: Update K8S deployment files
+        run: |
+          sed -i "s|image: ghcr.io/${{ github.repository_owner }}/worldcup-backend:.*|image: ghcr.io/${{ github.repository_owner }}/worldcup-backend:$IMAGE_TAG|" k8s/backend-deployment.yaml
+          sed -i "s|image: ghcr.io/${{ github.repository_owner }}/worldcup-frontend:.*|image: ghcr.io/${{ github.repository_owner }}/worldcup-frontend:$IMAGE_TAG|" k8s/frontend-deployment.yaml
+
+      - name: Commit updated deployment files
+        run: |
+          git config --global user.email "ci@github-actions.com"
+          git config --global user.name "GitHub Actions"
+          git add k8s/backend-deployment.yaml k8s/frontend-deployment.yaml
+          git commit -m "ci: update image tags to $IMAGE_TAG [skip ci]"
+          git push
+
+      - name: Deploy to K8S
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.JEDLIK_K8S_CONFIG }}" | base64 -d > ~/.kube/config
+          kubectl apply -f ./k8s/backend-deployment.yaml
+          kubectl apply -f ./k8s/frontend-deployment.yaml
+          kubectl rollout status deployment/worldcup-backend-deployment --timeout=120s
+          kubectl rollout status deployment/worldcup-frontend-deployment --timeout=120s
