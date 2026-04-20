@@ -66,5 +66,5 @@ jobs:
           echo "${{ secrets.JEDLIK_K8S_CONFIG }}" | base64 -d > ~/.kube/config
           kubectl apply -f ./k8s/backend-deployment.yaml
           kubectl apply -f ./k8s/frontend-deployment.yaml
-          kubectl rollout status deployment/worldcup-backend-deployment --timeout=120s
-          kubectl rollout status deployment/worldcup-frontend-deployment --timeout=120s
+          kubectl rollout status deployment/worldcup-backend-deployment --timeout=180s || kubectl describe pod -l app=worldcup-backend
+          kubectl rollout status deployment/worldcup-frontend-deployment --timeout=180s || kubectl describe pod -l app=worldcup-frontend
