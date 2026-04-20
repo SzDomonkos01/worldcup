@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: worldcup-backend-container
-          image: ghcr.io/szdomonkos01/worldcup-backend:1776683423
+          image: ghcr.io/szdomonkos01/worldcup-backend:1776683685
           ports:
             - containerPort: 3001
           env:
