@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: worldcup-frontend-container
-          image: ghcr.io/szdomonkos01/worldcup-frontend:1776681149
+          image: ghcr.io/szdomonkos01/worldcup-frontend:1776681479
           ports:
             - containerPort: 80
       imagePullSecrets:
