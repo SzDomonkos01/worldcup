@@ -6,7 +6,7 @@ app.use(cors());
 app.use(express.json());
 
 const worldCupWinners = {
-  1930: { winner: 'Uruguay__', runnerUp: 'Argentina', host: 'Uruguay', goals: 70 },
+  1930: { winner: 'Uruguay', runnerUp: 'Argentina', host: 'Uruguay', goals: 70 },
   1934: { winner: 'Italy', runnerUp: 'Czechoslovakia', host: 'Italy', goals: 70 },
   1938: { winner: 'Italy', runnerUp: 'Hungary', host: 'France', goals: 84 },
   1950: { winner: 'Uruguay', runnerUp: 'Brazil', host: 'Brazil', goals: 88 },

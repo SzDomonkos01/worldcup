@@ -43,7 +43,7 @@ export default function App() {
       <header>
         <div className="trophy">⚽</div>
         <h1>World Cup<br /><span>Winners</span></h1>
-        <p className="subtitle">Select a tournament year to reveal the champion</p>
+        <p className="subtitle" color="red">Select a tournament year to reveal the champion</p>
       </header>
 
       <div className="year-grid">
