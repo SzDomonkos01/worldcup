@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: worldcup-frontend-container
-          image: ghcr.io/<szdomonkos01>/worldcup-frontend:latest
+          image: ghcr.io/szdomonkos01/worldcup-frontend:latest
           ports:
             - containerPort: 80
       imagePullSecrets:
@@ -47,7 +47,7 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-    - worldcup.<szdomonkos>.jcloud.jedlik.cloud
+    - worldcup.szdomonkos.jcloud.jedlik.cloud
 
 ---
 
@@ -61,10 +61,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - worldcup.<szdomonkos>.jcloud.jedlik.cloud
+        - worldcup.szdomonkos.jcloud.jedlik.cloud
       secretName: worldcup-certificate
   rules:
-    - host: worldcup.<szdomonkos>.jcloud.jedlik.cloud
+    - host: worldcup.szdomonkos.jcloud.jedlik.cloud
       http:
         paths:
           - path: /api
