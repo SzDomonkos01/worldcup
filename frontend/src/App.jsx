@@ -43,7 +43,7 @@ export default function App() {
       <header>
         <div className="trophy">⚽</div>
         <h1>World Cup<br /><span>Winners</span></h1>
-        <p className="subtitle" color="red">Select a tournament year to reveal the champion</p>
+        <p className="subtitle">Select a tournament year to reveal the champion</p>
       </header>
 
       <div className="year-grid">
@@ -147,7 +147,7 @@ export default function App() {
         }
 
         .subtitle {
-          color: #7880a0;
+          color: red;
           font-size: 0.95rem;
           margin-top: 0.75rem;
           letter-spacing: 0.5px;
